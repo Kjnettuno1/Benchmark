@@ -45,9 +45,10 @@ import gspread
 # CONFIG  --  edit these; everything below is machinery
 # =====================================================================
 
-# The DLS "as-of" date your base weights correspond to (end-2023 dataset).
-# When you refresh weights from a newer DLS update, change this to match.
-BASE_DATE = dt.date(2023, 12, 31)
+# The DLS "as-of" date your base weights correspond to.
+# Rebased to end-2024 (Swinkels/Robeco Expected Returns 2026-2030, Sept 2025).
+# When you refresh weights from a newer DLS vintage, change this to match.
+BASE_DATE = dt.date(2024, 12, 31)
 
 # Trailing window length in days for the 1-year figure.
 TRAILING_DAYS = 365
@@ -82,6 +83,7 @@ SLEEVES: list[tuple[str, list[tuple[str, float]], float]] = [
     ("Inflation-Linked Bonds",                        [("TIP",  1.00)],                 1.00),  # add WIP for global
     ("High-Yield Bonds",                              [("HYG",  1.00)],                 1.00),  # add IHY/GHYG for global
     ("Private Equity (replication: lev. small-value)", [("AVUV", 1.00)],                1.30),
+    ("Private Credit (BDC proxy)",                     [("BIZD", 1.00)],                1.00),  # BDCs already internally levered -> no homemade leverage
 ]
 
 # Secrets supplied by GitHub Actions (see README_SETUP.md):
