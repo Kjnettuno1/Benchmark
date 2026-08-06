@@ -1,0 +1,38 @@
+name: Market-Portfolio Total Returns
+
+# Runs on weekdays after the US close, and can be triggered manually.
+on:
+  schedule:
+    - cron: "30 22 * * 1-5"   # 22:30 UTC, Mon-Fri (~after US market close)
+  workflow_dispatch:            # lets you run it on demand from the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  compute:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compute total returns and update sheet
+        env:
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: python compute_total_returns.py
+
+      - name: Upload audit CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: returns-csv
+          path: returns.csv
+          if-no-files-found: warn
